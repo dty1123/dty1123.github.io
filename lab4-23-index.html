@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秋分数字展销平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "微软雅黑",sans-serif;
+            color: #101010;
+            background-color: #f9f9f9;
+            line-height: 1.6;
+        }
+        /*固定导航栏*/
+      .fixed-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 999;
+      padding: 15px 0;
+    }
+    .fixed-nav nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .fixed-nav nav ul li {
+      margin: 0 20px;
+    }
+    .fixed-nav nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+        .header {
+            padding: 15px 50px;
+            border-bottom: 1px solid #ebe8e8;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #606060;
+        }
+        .nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+        .nav ul li a {
+            text-decoration: none;
+            color: #606060;
+            font-size: 16px;
+            transition: color 0.3s;
+            padding: 5px 0;
+        }
+        .nav ul li a:hover {
+            color: #6599e3;
+        }
+        .main {
+            width: 1200px;
+            margin: 20px auto;
+            display: flex;
+            gap: 20px;
+            padding-top: 80px;
+        }
+        .sidebar-left {
+            width: 220px;
+            background: #f54f1c;
+            padding: 20px;
+            border: 1px solid #f9f9f9;
+            border-radius: 4px;
+        }
+        .sidebar-left h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f9f9f9;
+        }
+        .category {
+            list-style: none;
+        }
+        .category li {
+            margin-bottom: 8px;
+        }
+        .category li a {
+            text-decoration: none;
+            color: #313131;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+        .category li a:hover {
+            background: #f9f9f9;
+        }
+        .content {
+            flex: 1;
+            min-width: 0;
+            background: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #aeabab;
+            border-radius: 4px;
+        }
+        .hot-recommend h2,
+        .new-books h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #aeabab;
+        }
+        .book-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .book-item {
+            flex: 1;
+            min-width: 213px;
+            border: 1px solid #606060;
+            padding: 10px;
+            border-radius: 4px;
+            transition: box-shadow 0.3s;
+        }
+        .book-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .book-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
+        .book-item h3 {
+            font-size: 16px;
+            margin: 10px 0;
+            text-align: center;
+            height: 40px;
+            line-height: 20px;
+            overflow: hidden;
+        }
+        .price {
+            display: block;
+            text-align: center;
+            color: #e4393c;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .new-books {
+            margin-top: 30px;
+        }
+        .new-books table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .new-books table th,
+        .new-books table td {
+            border: 1px solid #393838;
+            padding: 12px 10px;
+            text-align: center;
+        }
+        .new-books table th {
+            background-color: #ea4848;
+        }
+        .new-books table tr:nth-child(even) {
+            background-color: #58d0e0;
+        }
+        .new-books table tr:nth-child(odd) {
+            background-color: #a5a4a4;
+        }
+        .sidebar-right {
+            width: 220px;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .sidebar-right h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .promotion {
+            margin-bottom: 25px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+        }
+        .promotion img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        .promotion p {
+            text-align: center;
+            color: #e4393c;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #fdf7f7;
+        }
+         
+     /* 悬浮购物车 */
+    .floating-cart {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #ff5722;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      z-index: 998;
+    }
+    .floating-cart img {
+      width: 30px;
+      height: 30px;
+    }
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: #fff;
+      color: #ff5722;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* 返回顶部按钮 */
+    .back-to-top {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      font-size: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 998;
+    }
+    .footer {
+            width: 100%;
+            height: 60px;
+            background: #333;
+            color: #fff;
+            text-align: center;
+            line-height: 60px;
+            margin-top: 30px;
+        }
+        .book-item {
+    position: relative; /* 新增：相对定位 */
+    /* 保留原有样式... */
+}
+
+/* 大图容器：默认隐藏，绝对定位 */
+.big-img-container {
+    position: absolute;
+    top: 0;
+    left: 100%; /* 让大图显示在书籍项的右侧 */
+    margin-left: 10px; /* 与书籍项保持间距 */
+    width: 500px; /* 大图宽度，可自定义 */
+    height: auto;
+    z-index: 1000; /* 层级高于其他元素，避免被遮挡 */
+    display: none; /* 默认隐藏 */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* 阴影增强层次感 */
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* 大图样式：自适应容器 */
+.big-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* 鼠标悬停书籍项时，显示大图容器 */
+.book-item:hover .big-img-container {
+    display: block;
+}
+/* 书籍项：开启相对定位，作为操作面板的定位参考 */
+.book-item {
+    position: relative; /* 关键：为绝对定位的操作面板提供参考 */
+    /* 保留原有样式... */
+}
+
+/* 操作面板：默认隐藏，绝对定位在书籍项上方 */
+.action-panel {
+    position: absolute;
+    bottom: 0; /* 与书籍项底部对齐 */
+    left: 0;
+    width: 100%;
+    background-color: rgba(0,0,0,0.8); /* 半透明黑色背景，用rgba控制透明度 */
+    padding: 10px 0;
+    display: none; /* 默认隐藏 */
+    text-align: center;
+}
+
+/* 操作按钮样式 */
+.action-panel button {
+    margin: 0 5px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.buy-btn {
+    background-color: #e4393c;
+}
+.buy-btn:hover {
+    background-color: #c21708;
+}
+.detail-btn {
+    background-color: #6599e3;
+}
+.detail-btn:hover {
+    background-color: #4a7bc8;
+}
+
+/* 鼠标悬停书籍项时，显示操作面板 */
+.book-item:hover .action-panel {
+    display: block;
+}
+/* 推荐标签：默认显示，保留空间 */
+.tag {
+    display: inline-block;
+    padding: 2px 6px;
+    background-color: #e4393c;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 3px;
+    margin-left: 5px;
+    /* 初始状态可见 */
+    visibility: visible;
+}
+
+/* 鼠标悬停分类项时，标签隐藏但保留空间 */
+.category li:hover .tag {
+    visibility: hidden;
+}
+/* 筛选导航：相对定位，作为下拉菜单的参考 */
+.filter-nav {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+.filter-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background-color: #fff;
+  cursor: pointer;
+}
+/* 下拉菜单：默认隐藏，绝对定位 */
+.filter-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: none; /* 初始隐藏 */
+  min-width: 120px;
+}
+.filter-menu a {
+  display: block;
+  padding: 5px 0;
+  text-decoration: none;
+  color: #333;
+}
+/* 鼠标悬停按钮时，显示下拉菜单 */
+.filter-nav > div {
+  position: relative;
+}
+.filter-nav > div:hover .filter-menu {
+  display: block;
+}
+    </style>
+    </head>
+
+
+
+
+    <body>
+        <header class="header">
+        <div class="logo">秋分图书展销平台</div>
+        <nav class="nav">
+            <ul>
+                <li><a href=" ">首页</a ></li>
+                <li><a href="#">图书分类</a ></li>
+                <li><a href="#">热门推荐</a ></li>
+                <li><a href="#">促销活动</a ></li>
+            </ul>
+        </nav>
+    </header>
+    <header class="fixed-nav">
+    <nav>
+      <ul>
+        <li><a href="#">首页</a ></li>
+        <li><a href="#">商品</a ></li>
+        <li><a href="#">售后</a></li>    
+        <li><a href="#">关于我们</a ></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="main">
+        <aside class="sidebar-left">
+            <h2>图书分类</h2>
+            <ul class="category">
+                <li><a href="#">小说</a ><span class="tag">推荐</span></li>
+                <li><a href="#">科普</a ></li>
+                <li><a href="#">历史</a ></li>
+                <li><a href="#">哲学</a ></li>
+                <li><a href="#">艺术</a ></li>
+            </ul>
+            <button class="filter-btn">价格筛选 ▼</button>
+                <div class="filter-menu">
+                <a href="#">0-50元</a >
+                <a href="#">50-100元</a >
+                <a href="#">100元以上</a >
+                </div>
+        </aside>
+        <section class="content">
+            <div class="hot-recommend">
+                <h2>热门推荐</h2>
+                <div class="book-list">
+                    <div class="book-item">
+                        <img src="tushu2.jpg" alt="月亮与六便士" />
+                        <div class="big-img-container">
+                            <img src="tushu2.jpg" alt="书籍大图" class="big-img">
+                        </div>
+                        <h3>《月亮与六便士》</h3>
+                        <span class="price">¥19.00</span>
+                        <div class="action-panel">
+                            <button class="buy-btn">加入购物车</button>
+                            <button class="detail-btn">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="book-item">
+                        <img src="tushu3.jpg" alt="百年孤独" />
+                        <div class="big-img-container">
+                            <img src="tushu3.jpg" alt="书籍大图" class="big-img">
+                        </div>
+                        <h3>《百年孤独》</h3>
+                        <span class="price">¥45.00</span>
+                        <div class="action-panel">
+                            <button class="buy-btn">加入购物车</button>
+                            <button class="detail-btn">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="book-item">
+                        <img src="tushu1.jpg" alt="人间失格" />
+                        <div class="big-img-container">
+                            <img src="tushu1.jpg" alt="书籍大图" class="big-img">
+                        </div>
+                        <h3>《人间失格》</h3>
+                        <span class="price">¥25.00</span>
+                        <div class="action-panel">
+                            <button class="buy-btn">加入购物车</button>
+                            <button class="detail-btn">查看详情</button>
+                        </div>
+                    </div>
+                    <div class="book-item">
+                        <img src="tushu4.jpg" alt=人性论"" />
+                        <div class="big-img-container">
+                            <img src="tushu4.jpg" alt="书籍大图" class="big-img">
+                        </div>
+                        <h3>《人性论》</h3>
+                        <span class="price">¥57.00</span>
+                        <div class="action-panel">
+                            <button class="buy-btn">加入购物车</button>
+                            <button class="detail-btn">查看详情</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="new-books">
+                <h2>新书上市</h2>
+                <table>
+                    <tr>
+                        <th>书名</th>
+                        <th>作者</th>
+                        <th>价格</th>
+                    </tr>
+                    <tr>
+                        <td>《巴黎圣母院》</td>
+                        <td>雨果</td>
+                        <td>¥39.00</td>
+                    </tr>
+                    <tr>
+                        <td>《战争与和平》</td>
+                        <td>托尔斯泰</td>
+                        <td>¥38.00</td>
+                    </tr>
+                    <tr>
+                        <td>《哈姆雷特》</td>
+                        <td>莎士比亚</td>
+                        <td>¥158.00</td>
+                    </tr>
+                    <tr>
+                        <td>《忏悔录》</td>
+                        <td>奥古斯丁</td>
+                        <td>¥58.00</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <aside class="sidebar-right">
+            <h2>促销信息</h2>
+            <div class="promotion">
+                <img src="cuxiao1.jpg" alt="满减活动" />
+                <p>全场图书满100减30，限时一周！</p >
+             </div>
+             <div class="promotion">
+                 <img src="cuxiao2.jpg" alt="新书折扣" />
+                 <p>新书上市一律8折，速来抢购！</p >
+             </div>
+         </aside>
+         <div class="floating-cart">
+             <img src="购物车.jpg" alt="购物车" />
+             <span class="cart-count">3</span>
+             </div>
+       <!-- 返回顶部按钮 -->
+         <button class="back-to-top">↑</button>
+
+         <script>
+       // 点击按钮，平滑滚动到顶部
+             document.querySelector('.back-to-top').addEventListener('click', function() {
+            window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+            });
+            });
+         </script>
+
+     </main>
+     <footer class="footer">
+         <p>© 2025 秋分图书展销平台 版权所有</p >
+     </footer>
+    </body>
+</html>
